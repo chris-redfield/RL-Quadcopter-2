@@ -1,5 +1,6 @@
 import numpy as np
 from physics_sim import PhysicsSim
+import random
 import sys
 
 class Task():
@@ -67,7 +68,27 @@ class Task():
         if(self.sim.pose[2] >= self.target_pos[2]):
             reward += 100
     
+        init_distance = 80
+        
+        if( abs(self.sim.pose[2] - self.target_pos[2]) < init_distance):
+            reward += 10
+        else:
+            reward -= 10
+            
+        if( abs(self.sim.pose[2] - self.target_pos[2]) < init_distance * .8):
+            reward += 50
+        
+        if( abs(self.sim.pose[2] - self.target_pos[2]) < init_distance * .7):
+            reward += 50
+            
+        if( abs(self.sim.pose[2] - self.target_pos[2]) < init_distance * .6):
+            reward += 50
+    
+        if(random.randint(0,100)<5):
+            print("positions (x,y,z), reward:",self.sim.pose[:3],reward)
+            
         return reward
+
 
     def step(self, rotor_speeds):
         """Uses action to obtain next state, reward, done."""
