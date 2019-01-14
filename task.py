@@ -39,15 +39,15 @@ class Task():
         # sigmoid reward
         #sig_reward = 1 - self.sigmoid(sum(abs(self.sim.pose[:3] - np.float32(self.target_pos))) * .3)
         
-        reward_x = -min(abs(self.target_pos[0] - self.sim.pose[0]), 20.0)
-        reward_y = -min(abs(self.target_pos[1] - self.sim.pose[1]), 20.0)
+        #reward_x = -min(abs(self.target_pos[0] - self.sim.pose[0]), 20.0)
+        #reward_y = -min(abs(self.target_pos[1] - self.sim.pose[1]), 20.0)
         reward_z = -min(abs(self.target_pos[2] - self.sim.pose[2]), 20.0)
      
         angular_stationary_score = (10.-.3*np.linalg.norm(self.sim.angular_v)**2)
      
        
-        reward = reward_x + reward_y + (reward_z * 1.5) + (angular_stationary_score / 10) + self.sim.v[2]
-        #reward = reward_z + (angular_stationary_score / 10) + self.sim.v[2]
+        #reward = reward_x + reward_y + (reward_z * 1.5) + (angular_stationary_score / 10) + self.sim.v[2]
+        reward = reward_z + (angular_stationary_score / 10) + self.sim.v[2]
         
         
         if( self.sim.v[2]> .1):
@@ -84,10 +84,12 @@ class Task():
         if( abs(self.sim.pose[2] - self.target_pos[2]) < init_distance * .6):
             reward += 50
     
+        sig_reward = self.sigmoid(reward)
+    
         if(random.randint(0,100)<5):
-            print("positions (x,y,z), reward:",self.sim.pose[:3],reward)
+            print("positions (x,y,z), reward:",self.sim.pose[:3],sig_reward)
             
-        return reward
+        return sig_reward
 
 
     def step(self, rotor_speeds):
